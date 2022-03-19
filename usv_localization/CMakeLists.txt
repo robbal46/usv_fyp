@@ -20,6 +20,25 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_executable(pose_add_covariance
+  src/pose_add_covariance.cpp
+)
+ament_target_dependencies(pose_add_covariance
+  rclcpp
+  geometry_msgs
+  std_msgs
+)
+install(TARGETS
+  pose_add_covariance
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+
 
 install(DIRECTORY
   launch

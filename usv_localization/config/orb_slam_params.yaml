@@ -10,7 +10,7 @@ orb_slam2_mono:
     load_map: false
     map_file: map.bin
 
-    pointcloud_frame_id: map
+    pointcloud_frame_id: odom
 
     camera_frame_id: camera_link    
     camera_fps: 30

@@ -6,5 +6,5 @@
     frame_id: 'camera_link'
     image_width: 640
     image_height: 480
-    camera_name: 'camera'
+    camera_name: 'usb_cam'
     camera_info_url: 'package://usv_localization/config/usb_cam.yaml'

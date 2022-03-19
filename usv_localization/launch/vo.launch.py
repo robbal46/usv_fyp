@@ -29,4 +29,19 @@ def generate_launch_description():
     )
     ld.add_action(orb_slam)
 
+    # Add covariance to ORB SLAM output
+    pose_cov = Node(
+        package='usv_localization',
+        executable='pose_add_covariance',
+        name='pose_add_covariance',
+        parameters=[{'covariance': [0.001, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.001, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.001, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.001, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.001, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.001]}
+        ]
+    )
+    ld.add_action(pose_cov)
+
     return ld

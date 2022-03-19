@@ -8,25 +8,27 @@ def generate_launch_description():
 
     ld = LaunchDescription()
 
-    # Sensor drivers
+    ### Sensor drivers
+    # GPS driver
     gps_driver_node = Node(
         package='nmea_navsat_driver',
         executable='nmea_serial_driver',
         name='gps_driver_node',
         namespace='/gps',
         parameters=[
-            {'port': '/dev/ttyUSB0'},
+            {'port': '/dev/ttyUSB1'},
             {'frame_id': 'gps_link'}
         ]
     )
     ld.add_action(gps_driver_node)
 
+    # IMU Driver
     imu_driver_node = Node(
         package='bno055',
         executable='bno055',
         name='imu_driver_node',
         parameters=[
-            {'uart_port': '/dev/ttyUSB1'},
+            {'uart_port': '/dev/ttyUSB0'},
             {'frame_id': 'imu_link'},
             {'ros_topic_prefix': ''}
         ],
@@ -39,6 +41,10 @@ def generate_launch_description():
     )
     ld.add_action(imu_driver_node)
 
+
+    ### State estimation nodes - robot_localization stack
+
+    # Navsat transform - takes in GPS fix and outputs odometry
     navsat_config = os.path.join(get_package_share_directory('usv_localization'), 
     'config', 'navsat_params.yaml')
     navsat_transform_node = Node(
@@ -48,7 +54,8 @@ def generate_launch_description():
         output='screen',
         parameters=[navsat_config],
         remappings=[
-            ('/imu', '/imu/data')
+            ('/imu', '/imu/data'),
+            ('/odometry/filtered', 'odometry/filtered_map')
         ]
     )
     ld.add_action(navsat_transform_node)
@@ -62,18 +69,28 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_odom_node',
         output='screen',
-        parameters=[ekf_config]
+        parameters=[ekf_config],
+        remappings=[
+            ('/odometry/filtered', '/odometry/filtered_odom')
+        ]
     )
     ld.add_action(ekf_odom_node)
+
     # Launch another node for map -> odom
-    # ekf_map_node = Node(
-    #     package='robot_localization',
-    #     executable='ekf_node',
-    #     name='ekf_map_node',
-    #     output='screen',
-    #     parameters=[ekf_config]
-    # )
-    # ld.add_action(ekf_map_node)
+    ekf_map_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_map_node',
+        output='screen',
+        parameters=[ekf_config],
+        remappings=[
+            ('/odometry/filtered', '/odometry/filtered_map')
+        ]
+    )
+    ld.add_action(ekf_map_node)
+
+
+
 
     # Static transform publishers - all sensors need a transform to base_link
     # Could do this with URDF and robot_state_publisher
@@ -91,5 +108,14 @@ def generate_launch_description():
         arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'imu_link']
     )
     ld.add_action(imu_static_tf)
+    cam_static_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='cam_base_link_tf',
+        arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'cam_link']
+    )
+    ld.add_action(cam_static_tf)
+
+
 
     return ld
