@@ -3,4 +3,4 @@ navsat_transform_node:
     frequency: 30.0
     publish_filtered_gps: true
     broadcast_utm_transform: true
-    magnetic_declination_radians: 0.03037
+    zero_altitude: true

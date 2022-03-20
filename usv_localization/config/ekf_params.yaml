@@ -19,6 +19,7 @@ ekf_odom_node:
                    false, false, false,
                    false, false, false] 
     pose0_queue_size: 10
+    pose0_differential: true
 
     imu0: /imu/data
     imu0_config: [false, false, false,
@@ -92,7 +93,7 @@ ekf_map_node:
     odom0_nodelay: false
     odom0_differential: false
     odom0_relative: false
-    odom0_pose_rejection_threshold: 1.2
+    odom0_pose_rejection_threshold: 0.8
     odom0_twist_rejection_threshold: 0.8
 
     pose0: /camera/pose
@@ -102,6 +103,7 @@ ekf_map_node:
                    false, false, false,
                    false, false, false] 
     pose0_queue_size: 10
+    pose0_differential: true
 
     imu0: /imu/data
     imu0_config: [false, false, false,

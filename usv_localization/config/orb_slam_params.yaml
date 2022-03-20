@@ -1,7 +1,7 @@
 orb_slam2_mono:
   ros__parameters:
 
-    publish_point_cloud: true
+    publish_point_cloud: false
     publish_pose: true
     publish_tf: false
     localize_only: true
