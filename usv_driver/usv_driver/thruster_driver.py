@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
-
+from std_msgs.msg import Int8MultiArray
 
 class ThrusterDriver(Node):
 
@@ -12,6 +12,7 @@ class ThrusterDriver(Node):
         super().__init__('thruster_driver')
 
         self.vel_sub = self.create_subscription(Twist, 'cmd_vel', self.vel_cmd_callback, 10)
+        self.cmd_sub = self.create_subscription(Int8MultiArray, 'cmd_raw', self.raw_cmd_callback, 10)
 
         self.declare_parameter('port', '/dev/ttyACM0')
         self.declare_parameter('baud', 9600)
@@ -30,6 +31,9 @@ class ThrusterDriver(Node):
         thrust_r = (x_vel + yaw_vel) * 100
 
         self.set_thrust(thrust_l, thrust_r)
+
+    def raw_cmd_callback(self, msg):
+        self.set_thrust(msg.data[0], msg.data[1])
 
 
     def set_thrust(self, left, right):
