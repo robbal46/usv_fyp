@@ -19,7 +19,7 @@ def generate_launch_description():
     ld.add_action(cam_driver)
 
 
-    orb_config = os.path.join(get_package_share_directory('usv_localization'), 'config', 'orb_slam_params.yaml')
+    orb_config = os.path.join(get_package_share_directory('usv_localization'), 'params', 'orb_slam_params.yaml')
     orb_voc = os.path.join(get_package_share_directory('orb_slam2_ros'), 'orb_slam2', 'Vocabulary', 'ORBvoc.txt')
     orb_slam = Node(
         package='orb_slam2_ros',
@@ -34,12 +34,12 @@ def generate_launch_description():
         package='usv_localization',
         executable='pose_add_covariance',
         name='pose_add_covariance',
-        parameters=[{'covariance': [0.001, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                    0.0, 0.001, 0.0, 0.0, 0.0, 0.0,
-                                    0.0, 0.0, 0.001, 0.0, 0.0, 0.0,
-                                    0.0, 0.0, 0.0, 0.001, 0.0, 0.0,
-                                    0.0, 0.0, 0.0, 0.0, 0.001, 0.0,
-                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.001]}
+        parameters=[{'covariance': [0.01, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.01, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.01, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.01, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.01, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.01]}
         ]
     )
     ld.add_action(pose_cov)

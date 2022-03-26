@@ -54,40 +54,23 @@ def generate_launch_description():
         output='screen',
         parameters=[navsat_config],
         remappings=[
-            ('/imu', '/imu/data'),
-            ('/odometry/filtered', 'odometry/filtered/map')
+            ('/imu', '/imu/data')
         ]
     )
     ld.add_action(navsat_transform_node)
 
     # Get config for EKF nodes
     ekf_config = os.path.join(get_package_share_directory('usv_localization'), 
-    'params', 'ekf_params.yaml')
+    'params', 'simple_ekf_params.yaml')
     # Launch first node for odom -> base_link
-    ekf_odom_node = Node(
+    ekf_node = Node(
         package='robot_localization',
-        executable='ukf_node',
-        name='ekf_odom_node',
+        executable='ekf_node',
+        name='ekf_node',
         output='screen',
-        parameters=[ekf_config],
-        remappings=[
-            ('/odometry/filtered', '/odometry/filtered/odom')
-        ]
+        parameters=[ekf_config]
     )
-    ld.add_action(ekf_odom_node)
-
-    # Launch another node for map -> odom
-    ekf_map_node = Node(
-        package='robot_localization',
-        executable='ukf_node',
-        name='ekf_map_node',
-        output='screen',
-        parameters=[ekf_config],
-        remappings=[
-            ('/odometry/filtered', '/odometry/filtered/map')
-        ]
-    )
-    ld.add_action(ekf_map_node)
+    ld.add_action(ekf_node)
 
 
 
@@ -124,7 +107,5 @@ def generate_launch_description():
         arguments=['-d', rviz_config]
     )
     ld.add_action(rviz)
-
-
 
     return ld
