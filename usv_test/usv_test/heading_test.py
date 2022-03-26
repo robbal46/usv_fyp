@@ -21,42 +21,18 @@ class HeadingTest(Node):
 
         self.imu_sub = self.create_subscription(Imu, 'bno055/imu', self.imu_cb, 10)
 
-        self.declare_parameter('surge_time', 5.0)
-        self.surge_time = self.get_parameter('surge_time').get_parameter_value().double_value
-        self.declare_parameter('surge_speed', 20)
-        self.surge_speed = self.get_parameter('surge_speed').get_parameter_value().integer_value
+        self.declare_parameter('surge', 20)
+        surge_speed = self.get_parameter('surge').get_parameter_value().integer_value
+        self.declare_parameter('heading', 0)
+        heading = self.get_parameter('heading').get_parameter_value().integer_value
+        self.declare_parameter('pid', [0.2,0.01,0.0])
+        pid = self.get_parameter('pid').get_parameter_value().double_array_value
 
-        
-
-
-        self.datum = None
-        self.target = 0
-        self.turns = 0
+        self.cmd = [surge_speed, surge_speed]
 
         # Setup yaw PI controller
-        self.yaw_controller = PID(1,0.1,0)
+        self.yaw_controller = PID(pid[0], pid[1], pid[2], setpoint=heading)
         self.yaw_controller.output_limits = (-50, 50)
-
-    def execute(self):
-        self.surge(self.surge_speed)
-
-    def surge(self):
-        cmd = Int8MultiArray()
-        cmd.data = [self.surge_speed, self.surge_speed]
-        self.cmd_pub.publish(cmd)
-        self.surge_timer = self.create_timer(self.surge_time, self.surge_timer_cb)
-
-    def surge_timer_cb(self):
-        cmd = Int8MultiArray()
-        cmd.data = [0,0]
-        self.cmd_pub.publish(cmd)
-        self.destroy_timer(self.surge_timer)
-
-        self.yaw()
-
-
-    def yaw(self):
-        self.target += (pi/2)       
 
 
 
@@ -65,22 +41,14 @@ class HeadingTest(Node):
         quat = [msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]
         (roll, pitch, yaw) = tf_transformations.euler_from_quaternion(quat)
 
+        yaw *= 180/pi
 
-        if self.datum == None:
-            self.datum = yaw
-            print(self.datum)
-            self.target = yaw
-        else:
-            rel_yaw = yaw - self.datum
-            print(rel_yaw)
-                
-            yaw_err = self.target - rel_yaw       
-
-            yaw_speed = int(self.yaw_controller(yaw_err))
-
-            cmd = Int8MultiArray()
-            cmd.data = [yaw_speed, -1*yaw_speed]
-            self.cmd_pub.publish(cmd)
+        yaw_speed = int(self.yaw_controller(yaw))
+        print(yaw_speed)
+                    
+        cmd = Int8MultiArray()
+        cmd.data = [self.cmd[0] - yaw_speed, self.cmd[1] + yaw_speed]
+        self.cmd_pub.publish(cmd)
 
 
 def main(args=None):
