@@ -4,15 +4,16 @@ import rclpy
 from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Int8MultiArray
+from std_msgs.msg import Int8, Int8MultiArray
 
 class ThrusterDriver(Node):
 
     def __init__(self):
         super().__init__('thruster_driver')
 
-        self.vel_sub = self.create_subscription(Twist, 'cmd_vel', self.vel_cmd_callback, 10)
-        self.cmd_sub = self.create_subscription(Int8MultiArray, 'cmd_raw', self.raw_cmd_callback, 10)
+        self.yaw_sub = self.create_subscription(Int8, '/thrusters/yaw', self.yaw_cb, 10)
+        self.surge_sub = self.create_subscription(Int8, '/thruster/surge', self.surge_cb, 10)
+        self.raw_sub = self.create_subscription(Int8MultiArray, '/thrusters/raw_cmd', self.raw_cmd_cb, 10)
 
         self.declare_parameter('port', '/dev/ttyACM0')
         self.declare_parameter('baud', 9600)
@@ -20,23 +21,37 @@ class ThrusterDriver(Node):
         baud = self.get_parameter('baud').get_parameter_value().integer_value
         self.ser = serial.Serial(port, baud)
 
+        self.yaw_cmd = 0
+        self.surge_cmd = 0
+    
 
-    # Velocity cmd from nav stack - take and convert to thrust
-    def vel_cmd_callback(self, msg):
-        # placeholder, work out kinematics and control
-        x_vel = msg.linear.x
-        yaw_vel = msg.angular.z
+    def yaw_cb(self, msg):
+        self.yaw_cmd = msg.data
+        self.set_thrust()
 
-        thrust_l = (x_vel - yaw_vel) * 100
-        thrust_r = (x_vel + yaw_vel) * 100
+    def surge_cb(self, msg):
+        self.surge_cmd = msg.data
+        self.set_thrust()
 
-        self.set_thrust(thrust_l, thrust_r)
+    def update_thrust(self):
+        left = self.surge_cmd - self.yaw_cmd
+        right = self.surge_cmd + self.yaw_cmd
+        self.set_thrust(left, right)
 
-    def raw_cmd_callback(self, msg):
+    def raw_cmd_cb(self, msg):
         self.set_thrust(msg.data[0], msg.data[1])
 
 
     def set_thrust(self, left, right):
+        if left > 100:
+            left = 100
+        elif left < -100:
+            left = -100
+        if right > 100:
+            right = 100
+        elif right < -100:
+            right = -100
+
         thrust_l = abs(int(left))
         dir_l = 0 if left >= 0 else 1
         thrust_r = abs(int(right))

@@ -35,5 +35,5 @@ ekf_node:
     odom0_nodelay: false
     odom0_differential: false
     odom0_relative: false
-    #odom0_pose_rejection_threshold: 0.8
-    #odom0_twist_rejection_threshold: 0.8
+    odom0_pose_rejection_threshold: 0.8
+    odom0_twist_rejection_threshold: 0.8
