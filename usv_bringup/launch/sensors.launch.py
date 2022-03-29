@@ -18,7 +18,7 @@ def generate_launch_description():
     return LaunchDescription([
 
         DeclareLaunchArgument('imu', default_value='True'),
-        DeclareLaunchArgument('gps', default_value='False'),
+        DeclareLaunchArgument('gps', default_value='True'),
         DeclareLaunchArgument('camera', default_value='False'),
 
 

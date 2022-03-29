@@ -19,22 +19,22 @@ class YawController(Node):
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_cb, 10)
         self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)
 
-        self.declare_parameter('pid', [10.0, 0.0, 0.0])
-        pid = self.get_parameter('pid').get_parameter_value().double_array_value
+        self.declare_parameter('pid', [1.0, 0.0, 0.0])
+        gains = self.get_parameter('pid').get_parameter_value().double_array_value
 
-        self.controller = PID(pid[0], pid[1], pid[2])
-        self.controller.output_limits = (-50,50)
+        self.pid = PID(gains[0], gains[1], gains[2])
+        self.pid.output_limits = (-50,50)
 
     # Get desired yaw velocity from cmd_vel and make PID setpoint
     def vel_cb(self, msg):
         target_vel = msg.angular.z
-        self.controller.setpoint = target_vel
+        self.pid.setpoint = target_vel
 
     # Drive PID loop in IMU callback
     def imu_cb(self, msg):
         yaw_vel = msg.angular_velocity.z
 
-        yaw_effort = int(self.controller(yaw_vel))
+        yaw_effort = int(self.pid(yaw_vel))
 
         cmd = Int8()
         cmd.data = yaw_effort
@@ -52,9 +52,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-

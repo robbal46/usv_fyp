@@ -1,7 +1,7 @@
 ekf_node:
   ros__parameters:
     
-    frequency: 30.0
+    frequency: 10.0
     sensor_timeout: 0.1
     two_d_mode: true
     print_diagnostics: true
@@ -11,19 +11,22 @@ ekf_node:
     base_link_frame: base_link
     world_frame: odom      
 
+    # Try using cmd vel
+    use_control: false
+    control_config: [true, false, false,
+                     false, false, false]
+
     imu0: /imu/data
     imu0_config: [false, false, false,
                   false, false, true,
                   false, false, false,
                   false, false, true,
-                  true,  true, false]
+                  true,  false, false]
     imu0_queue_size: 5
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    #imu0_pose_rejection_threshold: 0.8
-    #imu0_twist_rejection_threshold: 0.8
-    #imu0_linear_acceleration_rejection_threshold: 0.8
+    imu0_linear_acceleration_rejection_threshold: 0.2
 
     odom0: /odometry/gps
     odom0_config: [true, true, false,
@@ -35,5 +38,5 @@ ekf_node:
     odom0_nodelay: false
     odom0_differential: false
     odom0_relative: false
-    odom0_pose_rejection_threshold: 0.8
-    odom0_twist_rejection_threshold: 0.8
+    odom0_pose_rejection_threshold: 3.5
+    odom0_twist_rejection_threshold: 1.0

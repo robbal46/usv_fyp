@@ -25,7 +25,9 @@ setup(
         'console_scripts': [
             'yaw_controller = usv_control.yaw_controller:main',
             'surge_controller = usv_control.surge_controller:main',
-            'thruster_driver = usv_control.thruster_driver:main'
+            'thruster_driver = usv_control.thruster_driver:main',
+            'velocity_pid_controller = usv_control.velocity_pid_controller:main',
+            'cmd_vel_mux = usv_control.cmd_vel_mux:main'
         ],
     },
 )

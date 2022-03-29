@@ -1,15 +1,11 @@
 import rclpy
 from rclpy.node import Node
 
-import tf_transformations
-
-from std_msgs.msg import Int8MultiArray
+from std_msgs.msg import Int8, Int16
 from sensor_msgs.msg import Imu
 
-from simple_pid import PID
-
+from tf_transformations import euler_from_quaternion
 from math import pi
-
 
 class SquareTest(Node):
 
@@ -17,9 +13,10 @@ class SquareTest(Node):
         # ROS stuff
         super().__init__('square_test')
 
-        self.cmd_pub = self.create_publisher(Int8MultiArray, 'cmd_raw', 10)
+        self.yaw_pub = self.create_publisher(Int16, '/target/yaw', 10)
+        self.surge_pub = self.create_publisher(Int8, '/thrusters/surge', 10)
 
-        self.imu_sub = self.create_subscription(Imu, 'bno055/imu', self.imu_cb, 10)
+        self.yaw_thrust_sub = self.create_subscription(Int8, '/thrusters/yaw', self.yaw_cb, 10)
 
         self.declare_parameter('surge_time', 5.0)
         self.surge_time = self.get_parameter('surge_time').get_parameter_value().double_value
@@ -27,90 +24,73 @@ class SquareTest(Node):
         self.surge_speed = self.get_parameter('surge_speed').get_parameter_value().integer_value
 
         self.declare_parameter('turns', [90])
-        self.turns = self.get_parameter('turns').get_parameter_value().integer_array_value  
+        self.turns = self.get_parameter('turns').get_parameter_value().integer_array_value   
 
-        self.declare_parameter('pid', [0.2,0.0,0.0])
-        pid = self.get_parameter('pid').get_parameter_value().double_array_value      
+        self.check = self.create_timer(0.5, self.check_timer) 
 
-
-        self.datum = None
         self.heading = 0
-
+        self.datum = None
         self.turning = False
         self.executed = 0
+        self.effort = 0
 
-        self.cmd = [0,0]
-
-        # Setup yaw PI controller
-        self.yaw_controller = PID(pid[0], pid[1], pid[2])
-        self.yaw_controller.output_limits = (-50, 50)
-
+        # Start by surging
         self.surge()
 
 
     def surge(self):
-        print('surge')
-        self.cmd = [self.surge_speed, self.surge_speed]
+        self.get_logger().info('Surge')
+
+        surge = Int8()
+        surge.data = self.surge_speed
+        self.surge_pub.publish(surge)
+
         self.surge_timer = self.create_timer(self.surge_time, self.surge_timer_cb)
 
     def surge_timer_cb(self):
-        print('stop')
-        self.cmd = [0,0]
+        self.get_logger().info('Stop')
+        
         self.destroy_timer(self.surge_timer)
+
         if self.executed < len(self.turns):
             self.turn()
+        else:
+            self.get_logger().info('Finished')
+
+            stop = Int8()
+            stop.data = 0
+            self.surge_pub.publish(stop)
 
 
     def turn(self):
-        print('turn')
-        self.heading += self.turns[self.executed]  
+        self.get_logger().info('Turning')
+
+        self.heading += self.turns[self.executed] 
+        # Convert t0 +/- 180 - might break if given > 360 rotation, don't do that
         if self.heading > 180:
             self.heading -= 360
         elif self.heading < -180:
-            self.heading += 360 
+            self.heading += 360
 
-        self.yaw_controller.setpoint = self.heading
-        
+        cmd = Int16()
+        cmd.data = self.heading
+        self.yaw_pub.publish(cmd)
+
         self.turning = True  
+        self.executed += 1
 
 
-
-    def imu_cb(self, msg):
-
-        quat = [msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]
-        (roll, pitch, yaw) = tf_transformations.euler_from_quaternion(quat)
-
-        yaw *= 180/pi
-        # if yaw < 0:
-        #     yaw += 360
-
-        # Set datum
-        if self.datum == None:
-            self.datum = yaw
-            self.heading = yaw - self.datum
-    
-        # Calculate relative yaw from datum
-        rel_yaw = yaw - self.datum
-        if rel_yaw < 0:
-            rel_yaw += 360
-        if rel_yaw > 180:
-            rel_yaw -= 360
-        elif rel_yaw < -180:
-            rel_yaw += 360
+    def yaw_cb(self, msg):
+        self.effort = msg.data
         
-
-        if self.turning == True:
-            if abs(rel_yaw - self.heading) < 5:
+                
+    def check_timer(self):
+        if self.turning:
+            if abs(self.effort) <= 1:
                 self.turning = False
-                self.executed += 1
                 self.surge()
 
 
-        yaw_speed = self.yaw_controller(rel_yaw)
-
-        cmd = Int8MultiArray()               
-        cmd.data = [self.cmd[0] - int(yaw_speed), self.cmd[1] + int(yaw_speed)]
-        self.cmd_pub.publish(cmd)
 
 
 def main(args=None):
