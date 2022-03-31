@@ -34,7 +34,7 @@ def generate_launch_description():
             package='usv_control',
             executable='velocity_pid_controller',
             parameters=[
-                {'pid': [0.2, 0.0, 0.0]}
+                {'pid': [1.0, 0.0, 0.0]}
             ],
             remappings=[
                 ('/cmd_vel/yaw', '/cmd_vel')

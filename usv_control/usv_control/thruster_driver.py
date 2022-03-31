@@ -12,7 +12,7 @@ class ThrusterDriver(Node):
         super().__init__('thruster_driver')
 
         self.yaw_sub = self.create_subscription(Int8, '/thrusters/yaw', self.yaw_cb, 10)
-        self.surge_sub = self.create_subscription(Int8, '/thruster/surge', self.surge_cb, 10)
+        self.surge_sub = self.create_subscription(Int8, '/thrusters/surge', self.surge_cb, 10)
         self.raw_sub = self.create_subscription(Int8MultiArray, '/thrusters/raw_cmd', self.raw_cmd_cb, 10)
 
         self.declare_parameter('port', '/dev/ttyACM0')
