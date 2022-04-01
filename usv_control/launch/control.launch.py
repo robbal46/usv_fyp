@@ -15,7 +15,6 @@ def generate_launch_description():
     
         DeclareLaunchArgument('yaw_control', default_value='True'),
         DeclareLaunchArgument('surge_control', default_value='False'),
-        DeclareLaunchArgument('thrusters', default_value='True'),
 
         # Yaw Controller
         Node(
@@ -52,15 +51,7 @@ def generate_launch_description():
                 {'pid': [10.0, 0.0, 0.0]}
             ],
             condition=IfCondition(LaunchConfiguration('surge_control'))
-        ),
-
-        # Thruster Driver
-        Node(
-            package='usv_control',
-            executable='thruster_driver',
-            name='thruster_driver',
-            condition=IfCondition(LaunchConfiguration('thrusters'))
-        )
+        )       
 
     ])
     
