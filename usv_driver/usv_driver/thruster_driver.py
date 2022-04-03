@@ -27,11 +27,11 @@ class ThrusterDriver(Node):
 
     def yaw_cb(self, msg):
         self.yaw_cmd = msg.data
-        self.set_thrust()
+        self.update_thrust()
 
     def surge_cb(self, msg):
         self.surge_cmd = msg.data
-        self.set_thrust()
+        self.update_thrust()
 
     def update_thrust(self):
         left = self.surge_cmd - self.yaw_cmd
