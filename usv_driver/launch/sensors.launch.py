@@ -12,7 +12,7 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
 
     # Config files
-    cam_config = os.path.join(get_package_share_directory('usv_localization'), 'config', 'cam_params.yaml')
+    cam_config = os.path.join(get_package_share_directory('usv_driver'), 'config', 'cam_params.yaml')
 
 
     return LaunchDescription([
@@ -60,7 +60,16 @@ def generate_launch_description():
             executable='usb_cam_node_exe',
             name='cam_driver',
             namespace='camera',
-            parameters=[cam_config],
+            parameters=[
+                {'video_device': '/dev/video0'},
+                {'framerate': 30.0},
+                {'io_method': 'mmap'},
+                {'frame_id': 'camera_link'},
+                {'image_width': 640},
+                {'image_height': 480},
+                {'camera_name': 'usb_cam'},
+                {'camera_info_url': 'package://usv_driver/config/usb_cam_calib.yaml'}
+            ],
             condition=IfCondition(LaunchConfiguration('camera'))
         )
             

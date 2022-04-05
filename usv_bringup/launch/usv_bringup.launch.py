@@ -1,11 +1,12 @@
 import os
+from re import I
 
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
@@ -20,21 +21,15 @@ def generate_launch_description():
 
     return LaunchDescription([
 
-        DeclareLaunchArgument('thrusters', default_value='true'),
-        DeclareLaunchArgument('imu', default_value='true'),
-        DeclareLaunchArgument('gps', default_value='true'),
-        DeclareLaunchArgument('camera', default_value='false'),
-        DeclareLaunchArgument('yaw_control', default_value='true'),
-        DeclareLaunchArgument('surge_control', default_value='true'),
+        DeclareLaunchArgument('offboard', default_value='false'),
+        DeclareLaunchArgument('control', default_value='true'),
+        DeclareLaunchArgument('localization', default_value='true'),
+        DeclareLaunchArgument('navigation', default_value='true'),
 
         # Launch sensor drivers
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_driver, 'sensors.launch.py')),
-            launch_arguments={
-                'imu': LaunchConfiguration('imu'),
-                'gps': LaunchConfiguration('gps'),
-                'camera': LaunchConfiguration('camera') 
-                }.items()
+            condition=UnlessCondition(LaunchConfiguration('offboard'))
         ),
 
         # Launch thruster driver (enable SBC - Arduino comms)
@@ -43,26 +38,28 @@ def generate_launch_description():
             package='usv_driver',
             executable='thruster_driver',
             name='thruster_driver',
-            condition=IfCondition(LaunchConfiguration('thrusters'))
+            condition=UnlessCondition(LaunchConfiguration('offboard'))
         ),
 
         # Launch controllers
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_control, 'control.launch.py')),
-            launch_arguments={
-                'yaw_control': LaunchConfiguration('yaw_control'),
-                'surge_control': LaunchConfiguration('surge_control')
-                }.items()
+            condition=IfCondition(LaunchConfiguration('control'))
         ),
 
         # Launch localization
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'localization.launch.py'))
+            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'localization.launch.py')),
+            launch_arguments={
+                'rviz': LaunchConfiguration('offboard')
+            }.items(),
+            condition=IfCondition(LaunchConfiguration('localization'))
         ),
 
         # Launch navigation
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(usv_navigation, 'launch', 'navigation.launch.py'))
+            PythonLaunchDescriptionSource(os.path.join(usv_navigation, 'launch', 'navigation.launch.py')),
+            condition=IfCondition(LaunchConfiguration('navigation'))
         )
 
     ])
