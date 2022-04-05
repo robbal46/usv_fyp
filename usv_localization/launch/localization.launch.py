@@ -9,9 +9,7 @@ from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 import xacro
 
-def generate_launch_description():
-
-    DeclareLaunchArgument('rviz', default_value='false')
+def generate_launch_description():   
 
     ukf_config = os.path.join(get_package_share_directory('usv_localization'), 
     'params', 'ukf_params.yaml')
@@ -26,6 +24,8 @@ def generate_launch_description():
     'urdf', 'usv.urdf.xacro'))
 
     return LaunchDescription([
+
+         DeclareLaunchArgument('rviz', default_value='false'),
 
         ### State estimation nodes - robot_localization stack        
         
