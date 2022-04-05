@@ -31,9 +31,9 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_driver, 'sensors.launch.py')),
             launch_arguments={
-                'imu': LaunchConfiguration('imu'),
-                'gps': LaunchConfiguration('gps'),
-                'camera': LaunchConfiguration('camera') 
+                'imu': 'true',
+                'gps': 'false',
+                'camera': 'false' 
                 }.items()
         ),
 
@@ -50,8 +50,8 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_control, 'control.launch.py')),
             launch_arguments={
-                'yaw_control': LaunchConfiguration('yaw_control'),
-                'surge_control': LaunchConfiguration('surge_control')
+                'yaw_control': 'true',
+                'surge_control': 'true'
                 }.items()
         ),
 
