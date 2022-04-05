@@ -63,7 +63,7 @@ def generate_launch_description():
         # Robot state publisher to broadcast static tfs from urdf
         Node(
             package='robot_state_publisher',
-            executable='robot_state_publisher_node',
+            executable='robot_state_publisher',
             output='screen',
             parameters=[
                 {'robot_description': urdf}
