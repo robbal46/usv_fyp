@@ -3,9 +3,15 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 import xacro
 
 def generate_launch_description():
+
+    DeclareLaunchArgument('rviz', default_value='false')
 
     ukf_config = os.path.join(get_package_share_directory('usv_localization'), 
     'params', 'ukf_params.yaml')
@@ -74,7 +80,8 @@ def generate_launch_description():
         Node(
             package='rviz2',
             executable='rviz2',
-            arguments=['-d', rviz_config]
+            arguments=['-d', rviz_config],
+            condition=IfCondition(LaunchConfiguration('rviz'))
         )
 
     ])
