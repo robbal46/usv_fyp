@@ -21,14 +21,19 @@ def generate_launch_description():
     return LaunchDescription([
 
         DeclareLaunchArgument('thrusters', default_value='true'),
+        DeclareLaunchArgument('imu', default_value='true'),
+        DeclareLaunchArgument('gps', default_value='true'),
+        DeclareLaunchArgument('camera', default_value='false'),
+        DeclareLaunchArgument('yaw_control', default_value='true'),
+        DeclareLaunchArgument('surge_control', default_value='true'),
 
         # Launch sensor drivers
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_driver, 'sensors.launch.py')),
             launch_arguments={
-                'imu': 'true',
-                'gps': 'false',
-                'camera': 'false' 
+                'imu': LaunchConfiguration('imu'),
+                'gps': LaunchConfiguration('gps'),
+                'camera': LaunchConfiguration('camera') 
                 }.items()
         ),
 
@@ -45,8 +50,8 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_control, 'control.launch.py')),
             launch_arguments={
-                'yaw_control': 'true',
-                'surge_control': 'true'
+                'yaw_control': LaunchConfiguration('yaw_control'),
+                'surge_control': LaunchConfiguration('surge_control')
                 }.items()
         ),
 
