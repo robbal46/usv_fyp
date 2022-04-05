@@ -7,7 +7,6 @@
   <maintainer email="alexandernrobb@gmail.com">alex</maintainer>
   <license>TODO: License declaration</license>
 
-  <exec_depend>simple_pid</exec_depend>
   <exec_depend>tf_transformations</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

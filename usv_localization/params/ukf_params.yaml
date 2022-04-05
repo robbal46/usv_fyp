@@ -1,4 +1,4 @@
-ekf_odom_node:
+ukf_odom_node:
   ros__parameters:
     
     frequency: 30.0
@@ -9,33 +9,34 @@ ekf_odom_node:
     map_frame: map
     odom_frame: odom
     base_link_frame: base_link
-    world_frame: odom   
+    world_frame: odom  
+    
+    use_control: true
+    control_config: [true, false, false
+                     false, false, true]
 
-
-    pose0: /camera/pose
-    pose0_config: [true,  true,  false,
-                   false, false, false, 
-                   false, false, false,
-                   false, false, false,
-                   false, false, false] 
-    pose0_queue_size: 10
-    pose0_differential: true
+    # pose0: /camera/pose
+    # pose0_config: [true,  true,  false,
+    #                false, false, false, 
+    #                false, false, false,
+    #                false, false, false,
+    #                false, false, false] 
+    # pose0_queue_size: 10
+    # pose0_differential: true
 
     imu0: /imu/data
     imu0_config: [false, false, false,
                   false, false, true,
                   false, false, false,
                   false, false, true,
-                  false, false, false]
+                  true, false, false]
     imu0_queue_size: 5
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
     imu0_pose_rejection_threshold: 0.8
     imu0_twist_rejection_threshold: 0.8
-    imu0_linear_acceleration_rejection_threshold: 0.8
-
-    
+    imu0_linear_acceleration_rejection_threshold: 0.8    
 
 
     process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -70,7 +71,7 @@ ekf_odom_node:
                                 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.000000001, 0.0,
                                 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    0.000000001]
 
-ekf_map_node:
+ukf_map_node:
   ros__parameters:
     
     frequency: 30.0
@@ -82,6 +83,10 @@ ekf_map_node:
     odom_frame: odom
     base_link_frame: base_link
     world_frame: map   
+
+    use_control: true
+    control_config: [true, false, false
+                     false, false, true]
 
     odom0: /odometry/gps
     odom0_config: [true, true, false,
@@ -96,14 +101,14 @@ ekf_map_node:
     odom0_pose_rejection_threshold: 0.8
     odom0_twist_rejection_threshold: 0.8
 
-    pose0: /camera/pose
-    pose0_config: [true,  true,  false,
-                   false, false, false, 
-                   false, false, false,
-                   false, false, false,
-                   false, false, false] 
-    pose0_queue_size: 10
-    pose0_differential: true
+    # pose0: /camera/pose
+    # pose0_config: [true,  true,  false,
+    #                false, false, false, 
+    #                false, false, false,
+    #                false, false, false,
+    #                false, false, false] 
+    # pose0_queue_size: 10
+    # pose0_differential: true
 
     imu0: /imu/data
     imu0_config: [false, false, false,

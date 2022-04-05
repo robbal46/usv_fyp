@@ -14,6 +14,8 @@ def generate_launch_description():
 
     usv_driver = get_package_share_directory('usv_driver')
     usv_control = get_package_share_directory('usv_control')
+    usv_localization = get_package_share_directory('usv_localization')
+    usv_navigation = get_package_share_directory('usv_navigation')
     
 
     return LaunchDescription([
@@ -44,11 +46,18 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(usv_control, 'control.launch.py')),
             launch_arguments={
                 'yaw_control': 'true',
-                'surge_control': 'false'
+                'surge_control': 'true'
                 }.items()
         ),
 
+        # Launch localization
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'localization.launch.py'))
+        ),
 
-
+        # Launch navigation
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(usv_navigation, 'navigation.launch.py'))
+        )
 
     ])

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<robot name="usv" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://usv_description/meshes/usv.stl" scale="1 1 1"/>
+            </geometry>
+            <material name="Grey">
+                <color rgba="0.2 0.2 0.2 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <origin xyz="0.3 0.09 0.2"/>
+    </joint>
+
+    <link name="imu_link"/>
+
+    <joint name="gps_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="gps_link"/>
+        <origin xyz="0.25 0.0 0.2"/>
+    </joint>
+
+    <link name="gps_link"/>
+
+    <joint name="cam_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="cam_link"/>
+        <origin xyz="0.3 0.0 0.2"/>
+    </joint>
+
+    <link name="cam_link"/>
+
+</robot>
