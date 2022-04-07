@@ -34,9 +34,9 @@ ukf_odom_node:
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    imu0_pose_rejection_threshold: 0.8
-    imu0_twist_rejection_threshold: 0.8
-    imu0_linear_acceleration_rejection_threshold: 0.8    
+    imu0_pose_rejection_threshold: 0.2
+    imu0_twist_rejection_threshold: 0.2
+    imu0_linear_acceleration_rejection_threshold: 0.2    
 
 
     # process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -98,8 +98,8 @@ ukf_map_node:
     odom0_nodelay: false
     odom0_differential: false
     odom0_relative: false
-    odom0_pose_rejection_threshold: 0.8
-    odom0_twist_rejection_threshold: 0.8
+    odom0_pose_rejection_threshold: 2.0
+    odom0_twist_rejection_threshold: 2.0
 
     # pose0: /camera/pose
     # pose0_config: [true,  true,  false,
@@ -120,9 +120,9 @@ ukf_map_node:
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    imu0_pose_rejection_threshold: 0.8
-    imu0_twist_rejection_threshold: 0.8
-    imu0_linear_acceleration_rejection_threshold: 0.8
+    imu0_pose_rejection_threshold: 0.2
+    imu0_twist_rejection_threshold: 0.2
+    imu0_linear_acceleration_rejection_threshold: 0.2
 
 
     # process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
