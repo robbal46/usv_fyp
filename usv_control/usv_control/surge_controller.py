@@ -14,7 +14,10 @@ class SurgeController(Node):
 
         self.surge_pub = self.create_publisher(Int8, '/thrusters/surge', 10)
 
-        self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)        
+        self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)  
+
+        self.declare_parameter('order', 3)
+        self.order = self.get_parameter('order').get_parameter_value().integer_value     
         
 
     # Convert to thrust - open loop control
@@ -27,14 +30,27 @@ class SurgeController(Node):
         surge.data = thrust
         self.surge_pub.publish(surge)
 
-    # Quadratic fit of experimental data
+    
     def vel_model(self, x):
-        thrust = 75.93*(x*x) - 35.96*x + 18.17
+        # Didn't collect backwards data
+        if x < 0:
+            x = 0
+        # Small deadzone
+        if x < 0.05:
+            x = 0
 
-        if thrust > 255:
-            thrust = 255
-        elif thrust < -255:
-            thrust = -255
+        # Quadratic fit of experimental data
+        if self.order == 2:
+            thrust = 48.84*(x*x) + 9.775*x + 2.081
+        # Cubic fit
+        elif self.order == 3:
+            thrust = 66.99*(x*x*x) - 76.18*(x*x) + 65.22*x - 0.5194
+        else:
+            thrust = 0
+            self.get_logger().error('Invalid order parameter (2 or 3 accepted)')
+
+        if thrust > 127:
+            thrust = 127
         
         return int(thrust)
 
