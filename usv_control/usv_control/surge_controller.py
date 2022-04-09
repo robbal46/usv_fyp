@@ -24,11 +24,11 @@ class SurgeController(Node):
         thrust = self.vel_model(target_vel)
 
         surge = Int8()
-        surge.data = int(thrust)
+        surge.data = thrust
         self.surge_pub.publish(surge)
 
     # Quadratic fit of experimental data
-    def vel_model(x):
+    def vel_model(self, x):
         thrust = 75.93*(x*x) - 35.96*x + 18.17
 
         if thrust > 255:
@@ -36,7 +36,7 @@ class SurgeController(Node):
         elif thrust < -255:
             thrust = -255
         
-        return thrust
+        return int(thrust)
 
 
 def main(args=None):
