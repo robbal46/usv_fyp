@@ -14,10 +14,8 @@ class SurgeController(Node):
 
         self.surge_pub = self.create_publisher(Int8, '/thrusters/surge', 10)
 
-        self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)
-
-        # Quadratic fit of experimental data
-        self.vel_model = lambda x: 75.93*(x*x) - 35.96*x + 18.17
+        self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)        
+        
 
     # Convert to thrust - open loop control
     def vel_cb(self, msg):
@@ -27,7 +25,18 @@ class SurgeController(Node):
 
         surge = Int8()
         surge.data = int(thrust)
-        self.surge_pub(surge)
+        self.surge_pub.publish(surge)
+
+    # Quadratic fit of experimental data
+    def vel_model(x):
+        thrust = 75.93*(x*x) - 35.96*x + 18.17
+
+        if thrust > 255:
+            thrust = 255
+        elif thrust < -255:
+            thrust = -255
+        
+        return thrust
 
 
 def main(args=None):
