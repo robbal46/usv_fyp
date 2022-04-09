@@ -45,7 +45,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_control, 'control.launch.py')),
             launch_arguments={
-                'position_control': False
+                'position_control': 'False'
             }.items(),
             condition=IfCondition(LaunchConfiguration('control'))
         ),

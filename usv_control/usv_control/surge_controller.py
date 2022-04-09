@@ -17,7 +17,7 @@ class SurgeController(Node):
         self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)
 
         # Quadratic fit of experimental data
-        self.vel_model = lambda x: 75.93*x^2 - 35.96*x + 18.17
+        self.vel_model = lambda x: 75.93*(x*x) - 35.96*x + 18.17
 
     # Convert to thrust - open loop control
     def vel_cb(self, msg):
