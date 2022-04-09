@@ -37,6 +37,18 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+add_executable(twist_add_covariance
+  src/twist_add_covariance.cpp
+)
+ament_target_dependencies(twist_add_covariance
+  rclcpp
+  geometry_msgs
+  std_msgs
+)
+install(TARGETS
+twist_add_covariance
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 
 

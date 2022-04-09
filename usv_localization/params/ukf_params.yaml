@@ -11,9 +11,6 @@ ukf_odom_node:
     base_link_frame: base_link
     world_frame: odom  
     
-    use_control: true
-    control_config: [true, true, false,
-                     false, false, true]
 
     # pose0: /camera/pose
     # pose0_config: [true,  true,  false,
@@ -29,14 +26,22 @@ ukf_odom_node:
                   false, false, true,
                   false, false, false,
                   false, false, true,
-                  true, false, false]
+                  false, false, false]
     imu0_queue_size: 5
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    imu0_pose_rejection_threshold: 0.2
-    imu0_twist_rejection_threshold: 0.2
-    imu0_linear_acceleration_rejection_threshold: 0.2    
+
+    # Velocity from cmd_vel, with covariance
+    twist0: /velocity
+    twist0_config: [false, false, false,
+                  false, false, false,
+                  true, true, false,
+                  false, false, false,
+                  false, false, false]
+    twist0_queue_size: 5
+    twist0_nodelay: false
+    twist0_differential: false
 
 
     # process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -84,9 +89,6 @@ ukf_map_node:
     base_link_frame: base_link
     world_frame: map   
 
-    use_control: true
-    control_config: [true, true, false,
-                     false, false, true]
 
     odom0: /odometry/gps
     odom0_config: [true, true, false,
@@ -115,14 +117,22 @@ ukf_map_node:
                   false, false, true,
                   false, false, false,
                   false, false, true,
-                  true,  false, false]
+                  false,  false, false]
     imu0_queue_size: 5
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    imu0_pose_rejection_threshold: 0.2
-    imu0_twist_rejection_threshold: 0.2
-    imu0_linear_acceleration_rejection_threshold: 0.2
+
+    # Velocity from cmd_vel, with covariance
+    twist0: /velocity
+    twist0_config: [false, false, false,
+                  false, false, false,
+                  true, true, false,
+                  false, false, false,
+                  false, false, false]
+    twist0_queue_size: 5
+    twist0_nodelay: false
+    twist0_differential: false
 
 
     # process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,

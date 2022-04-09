@@ -15,6 +15,7 @@ def generate_launch_description():
     
         DeclareLaunchArgument('yaw_control', default_value='True'),
         DeclareLaunchArgument('surge_control', default_value='True'),
+        DeclareLaunchArgument('position_control', default_value='False'),
 
         # Yaw Controller
         Node(
@@ -35,21 +36,21 @@ def generate_launch_description():
             name='surge_controller',
             output='screen',
             condition=IfCondition(LaunchConfiguration('surge_control'))
-        )
+        ),
 
-        # # Yaw velocity controller
-        # Node(
-        #     package='usv_control',
-        #     executable='velocity_pid_controller',
-        #     parameters=[
-        #         {'pid': [1.0, 0.0, 0.0]},
-        #         {'relative': False}
-        #     ],
-        #     remappings=[
-        #         ('/cmd_vel/yaw', '/cmd_vel')
-        #     ],
-        #     condition=IfCondition(LaunchConfiguration('yaw_control'))
-        # ),   
+        # Yaw velocity controller
+        Node(
+            package='usv_control',
+            executable='velocity_pid_controller',
+            parameters=[
+                {'pid': [1.0, 0.0, 0.0]},
+                {'relative': False}
+            ],
+            remappings=[
+                ('/cmd_vel/yaw', '/cmd_vel')
+            ],
+            condition=IfCondition(LaunchConfiguration('position_control'))
+        )   
 
     ])
     

@@ -36,7 +36,7 @@ class PoseAddCovariance : public rclcpp::Node
         }
 
     private:
-        void pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg) const{
+        void pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg){
 
             auto pose_cov_msg = geometry_msgs::msg::PoseWithCovarianceStamped();
 

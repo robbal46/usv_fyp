@@ -66,6 +66,19 @@ def generate_launch_description():
             ]
         ),
 
+        # Add covariance to cmd_vel and republish
+        Node(
+            package='usv_localization',
+            executable='twist_add_covariance',
+            parameters=[{'covariance': [0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.1]}
+            ]
+        ),
+
         # Robot state publisher to broadcast static tfs from urdf
         Node(
             package='robot_state_publisher',
