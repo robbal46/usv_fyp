@@ -26,7 +26,7 @@ class SurgeController(Node):
         thrust = self.vel_model(target_vel)
 
         surge = Int8()
-        surge.data = thrust
+        surge.data = int(thrust)
         self.surge_pub(surge)
 
 
