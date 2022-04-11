@@ -29,6 +29,9 @@ def generate_launch_description():
         # Launch sensor drivers
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_driver, 'sensors.launch.py')),
+            launch_arguments={
+                'gps': 'False'
+            }.items(),
             condition=UnlessCondition(LaunchConfiguration('offboard'))
         ),
 
