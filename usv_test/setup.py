@@ -27,7 +27,8 @@ setup(
             'heading_test = usv_test.heading_test:main',
             'square_test = usv_test.square_test:main',
             'imu_quat_to_euler = usv_test.imu_quat_to_euler:main',
-            'goal_test = usv_test.goal_test:main'
+            'goal_test = usv_test.goal_test:main',
+            'gps_viz = usv_test.gps_viz:main'
         ],
     },
 )

@@ -24,7 +24,7 @@ def generate_launch_description():
             name='yaw_controller',
             output='screen',
             parameters=[
-                {'pid': [4.0, 0.0, 0.0]}
+                {'pid': [10.0, 0.0, 0.0]}
             ],
             condition=IfCondition(LaunchConfiguration('yaw_control'))
         ),        
@@ -35,6 +35,9 @@ def generate_launch_description():
             executable='surge_controller',
             name='surge_controller',
             output='screen',
+            parameters=[
+                {'order': 3}
+            ],
             condition=IfCondition(LaunchConfiguration('surge_control'))
         ),
 

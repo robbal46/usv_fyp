@@ -26,6 +26,7 @@ def generate_launch_description():
     return LaunchDescription([
 
          DeclareLaunchArgument('rviz', default_value='false'),
+         DeclareLaunchArgument('gps', default_value='false'),
 
         ### State estimation nodes - robot_localization stack        
         
@@ -63,7 +64,8 @@ def generate_launch_description():
             remappings=[
                 ('/imu', '/imu/data'),
                 ('/odometry/filtered', 'odometry/filtered/map')
-            ]
+            ],
+            condition=IfCondition(LaunchConfiguration('gps'))
         ),
 
         # Add covariance to cmd_vel and republish

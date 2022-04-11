@@ -14,9 +14,6 @@ def generate_launch_description():
     ukf_config = os.path.join(get_package_share_directory('usv_localization'), 
     'params', 'simple_ukf_params.yaml')
 
-    navsat_config = os.path.join(get_package_share_directory('usv_localization'), 
-    'params', 'navsat_params.yaml')
-
     rviz_config = os.path.join(get_package_share_directory('usv_localization'), 
     'config', 'tf.rviz')
 
@@ -36,18 +33,6 @@ def generate_launch_description():
             name='ukf_node',
             output='screen',
             parameters=[ukf_config]
-        ),
-
-        # Navsat transform - takes in GPS fix and outputs odometry    
-        Node(
-            package='robot_localization',
-            executable='navsat_transform_node',
-            name='navsat_transform_node',
-            output='screen',
-            parameters=[navsat_config],
-            remappings=[
-                ('/imu', '/imu/data')
-            ]
         ),
 
         # Add covariance to cmd_vel and republish

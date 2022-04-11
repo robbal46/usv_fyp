@@ -5,42 +5,39 @@ bt_navigator:
     use_sim_time: False
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odom
+    odom_topic: /odometry/filtered/odom
     bt_loop_duration: 10
     default_server_timeout: 20
     plugin_lib_names:
-      - nav2_compute_path_to_pose_action_bt_node
-      - nav2_follow_path_action_bt_node
-      - nav2_back_up_action_bt_node
-      - nav2_spin_action_bt_node
-      - nav2_wait_action_bt_node
-      - nav2_clear_costmap_service_bt_node
-      - nav2_is_stuck_condition_bt_node
-      - nav2_goal_reached_condition_bt_node
-      - nav2_goal_updated_condition_bt_node
-      - nav2_initial_pose_received_condition_bt_node
-      - nav2_reinitialize_global_localization_service_bt_node
-      - nav2_rate_controller_bt_node
-      - nav2_distance_controller_bt_node
-      - nav2_speed_controller_bt_node
-      - nav2_truncate_path_action_bt_node
-      - nav2_goal_updater_node_bt_node
-      - nav2_recovery_node_bt_node
-      - nav2_pipeline_sequence_bt_node
-      - nav2_round_robin_node_bt_node
-      - nav2_transform_available_condition_bt_node
-      - nav2_time_expired_condition_bt_node
-      - nav2_distance_traveled_condition_bt_node
-      - nav2_navigate_to_pose_action_bt_node
+     - nav2_compute_path_to_pose_action_bt_node
+    - nav2_follow_path_action_bt_node
+    - nav2_back_up_action_bt_node
+    - nav2_spin_action_bt_node
+    - nav2_wait_action_bt_node
+    - nav2_clear_costmap_service_bt_node
+    - nav2_is_stuck_condition_bt_node
+    - nav2_goal_reached_condition_bt_node
+    - nav2_goal_updated_condition_bt_node
+    - nav2_initial_pose_received_condition_bt_node
+    - nav2_reinitialize_global_localization_service_bt_node
+    - nav2_rate_controller_bt_node
+    - nav2_distance_controller_bt_node
+    - nav2_speed_controller_bt_node
+    - nav2_truncate_path_action_bt_node
+    - nav2_goal_updater_node_bt_node
+    - nav2_recovery_node_bt_node
+    - nav2_pipeline_sequence_bt_node
+    - nav2_round_robin_node_bt_node
+    - nav2_transform_available_condition_bt_node
+    - nav2_time_expired_condition_bt_node
+    - nav2_distance_traveled_condition_bt_node
 
-bt_navigator_rclcpp_node:
-  ros__parameters:
-    use_sim_time: False
 
 controller_server:
   ros__parameters:
     use_sim_time: False
     controller_frequency: 20.0
+    odom_topic: odometry/filtered/odom
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
@@ -82,16 +79,13 @@ controller_server:
       use_rotate_to_heading: true
       allow_reversing: false
       rotate_to_heading_min_angle: 0.785
-      max_angular_accel: 
+      max_angular_accel: 3.0
       max_robot_pose_search_dist: 10.0
       use_interpolation: false
 
 
-controller_server_rclcpp_node:
-  ros__parameters:
-    use_sim_time: False
-
 # The local costmap is always empty
+# This configuration can probably be simplified, e.g., there's no laser scanner
 local_costmap:
   local_costmap:
     ros__parameters:
@@ -104,7 +98,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.75
+      robot_radius: 0.22
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -118,7 +112,13 @@ local_costmap:
         z_voxels: 16
         max_obstacle_height: 2.0
         mark_threshold: 0
-        observation_sources: ""
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
       static_layer:
         map_subscribe_transient_local: True
       always_send_full_costmap: True
@@ -138,13 +138,19 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_link
       use_sim_time: False
-      robot_radius: 0.75
+      robot_radius: 0.22
       resolution: 0.05
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: ""
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -158,17 +164,17 @@ global_costmap:
     ros__parameters:
       use_sim_time: False
 
-# map_server:
-#   ros__parameters:
-#     use_sim_time: False
-#     yaml_filename: "empty_world.yaml"
+map_server:
+  ros__parameters:
+    use_sim_time: False
+    yaml_filename: "empty_world.yaml"
 
-# map_saver:
-#   ros__parameters:
-#     use_sim_time: False
-#     save_map_timeout: 5000
-#     free_thresh_default: 0.25
-#     occupied_thresh_default: 0.65
+map_saver:
+  ros__parameters:
+    use_sim_time: False
+    save_map_timeout: 5000
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
 
 planner_server:
   ros__parameters:
@@ -182,10 +188,6 @@ planner_server:
       use_astar: False
       allow_unknown: True
 
-
-planner_server_rclcpp_node:
-  ros__parameters:
-    use_sim_time: False
 
 recoveries_server:
   ros__parameters:
