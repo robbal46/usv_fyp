@@ -1,6 +1,6 @@
 <!-- Simple behaviour tree for USV-->
 
-<!-- <root main_tree_to_execute="MainTree">
+<root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
       <PipelineSequence name="NavigateWithReplanning">
@@ -15,9 +15,9 @@
       </ReactiveFallback>
     </RecoveryNode>
   </BehaviorTree>
-</root> -->
+</root>
 
-<root main_tree_to_execute="MainTree">
+<!-- <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
       <PipelineSequence name="NavigateWithReplanning">
@@ -52,4 +52,4 @@
       </ReactiveFallback>
     </RecoveryNode>
   </BehaviorTree>
-</root>
+</root> -->

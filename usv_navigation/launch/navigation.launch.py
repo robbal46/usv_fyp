@@ -38,7 +38,7 @@ def generate_launch_description():
         source_file=params_file,
         param_rewrites={
             'yaml_filename': world_file,
-            'default_bt_xml_filename': bt_file,
+            'default_bt_xml_filename': bt_file
             #'default_nav_to_pose_bt_xml': bt_file,
             #'default_nav_through_poses_bt_xml': 'invalid_file',            
         },
@@ -46,93 +46,93 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # Node(
-        #     package='nav2_map_server',
-        #     executable='map_server',
-        #     name='map_server',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),
-        # Node(
-        #     package='nav2_controller',
-        #     executable='controller_server',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),
-        # Node(
-        #     package='nav2_planner',
-        #     executable='planner_server',
-        #     name='planner_server',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),
-        # Node(
-        #     package='nav2_recoveries',
-        #     executable='recoveries_server',
-        #     name='recoveries_server',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),
-        # Node(
-        #     package='nav2_bt_navigator',
-        #     executable='bt_navigator',
-        #     name='bt_navigator',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),
-        # Node(
-        #     package='nav2_waypoint_follower',
-        #     executable='waypoint_follower',
-        #     name='waypoint_follower',
-        #     output='screen',
-        #     parameters=[params],
-        #     remappings=remappings
-        # ),        
-        # Node(
-        #     package='nav2_lifecycle_manager',
-        #     executable='lifecycle_manager',
-        #     name='lifecycle_manager_navigation',
-        #     output='screen',
-        #     parameters=[{'use_sim_time': False},
-        #                 {'autostart': True},
-        #                 {'node_names': lifecycle_nodes}]
-        # )
-
-        # Publish a [likely empty] nav2 map
         Node(
             package='nav2_map_server',
             executable='map_server',
             name='map_server',
             output='screen',
             parameters=[params],
+            remappings=remappings
         ),
-
-        # Manage the lifecycle of map_server
+        Node(
+            package='nav2_controller',
+            executable='controller_server',
+            output='screen',
+            parameters=[params],
+            remappings=remappings
+        ),
+        Node(
+            package='nav2_planner',
+            executable='planner_server',
+            name='planner_server',
+            output='screen',
+            parameters=[params],
+            remappings=remappings
+        ),
+        Node(
+            package='nav2_recoveries',
+            executable='recoveries_server',
+            name='recoveries_server',
+            output='screen',
+            parameters=[params],
+            remappings=remappings
+        ),
+        Node(
+            package='nav2_bt_navigator',
+            executable='bt_navigator',
+            name='bt_navigator',
+            output='screen',
+            parameters=[params],
+            remappings=remappings
+        ),
+        Node(
+            package='nav2_waypoint_follower',
+            executable='waypoint_follower',
+            name='waypoint_follower',
+            output='screen',
+            parameters=[params],
+            remappings=remappings
+        ),        
         Node(
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',
-            name='lifecycle_manager_map_server',
+            name='lifecycle_manager_navigation',
             output='screen',
-            parameters=[{
-                'autostart': True,
-                'node_names': ['map_server'],
-            }],
-        ),
+            parameters=[{'use_sim_time': False},
+                        {'autostart': True},
+                        {'node_names': lifecycle_nodes}]
+        )
 
-        # Include the rest of Nav2
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(nav2_bringup),
-            launch_arguments={
-                'autostart': 'True',
-                'params_file': params,
-                'map_subscribe_transient_local': 'true',
-            }.items(),
-        ),
+        # # Publish a [likely empty] nav2 map
+        # Node(
+        #     package='nav2_map_server',
+        #     executable='map_server',
+        #     name='map_server',
+        #     output='screen',
+        #     parameters=[params],
+        # ),
+
+        # # Manage the lifecycle of map_server
+        # Node(
+        #     package='nav2_lifecycle_manager',
+        #     executable='lifecycle_manager',
+        #     name='lifecycle_manager_map_server',
+        #     output='screen',
+        #     parameters=[{
+        #         'autostart': True,
+        #         'node_names': ['map_server'],
+        #     }],
+        # ),
+
+        # # Include the rest of Nav2
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(nav2_bringup),
+        #     launch_arguments={
+        #         'autostart': 'True',
+        #         'params_file': params,
+        #         'map_subscribe_transient_local': 'true',
+        #     }.items(),
+        # ),
 
 
     ])
