@@ -28,6 +28,16 @@ def generate_launch_description():
          DeclareLaunchArgument('rviz', default_value='false'),
          DeclareLaunchArgument('gps', default_value='false'),
 
+        # Robot state publisher to broadcast static tfs from urdf
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            output='screen',
+            parameters=[
+                {'robot_description': urdf}
+            ]
+        ),
+
         ### State estimation nodes - robot_localization stack        
         
         # Launch first node for odom -> base_link
@@ -79,17 +89,7 @@ def generate_launch_description():
                                         0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.1]}
             ]
-        ),
-
-        # Robot state publisher to broadcast static tfs from urdf
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            output='screen',
-            parameters=[
-                {'robot_description': urdf}
-            ]
-        ),
+        ),        
 
         # Launch rviz with tf view
         Node(
