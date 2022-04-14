@@ -4,7 +4,8 @@ from rclpy.node import Node
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 
-from geometry_msgs.msg import Pose, Twist
+from geometry_msgs.msg import PoseStamped, Twist
+from nav_msgs.msg import Odometry
 from std_msgs.msg import Bool
 
 from tf_transformations import euler_from_quaternion, quaternion_from_euler
@@ -16,7 +17,9 @@ class NavToPose(Node):
     def __init__(self):
         super().__init__('nav_to_pose')
 
-        self.create_subscription(Pose, 'goal_pose', self.goal_cb, 10)
+        self.create_subscription(PoseStamped, 'goal_pose', self.goal_cb, 10)
+
+        self.create_subscription(Odometry, 'odometry/filtered', self.odom_cb, 10)
 
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
@@ -38,13 +41,13 @@ class NavToPose(Node):
 
     # Get new goal pose
     def goal_cb(self, msg):
-        x = msg.position.x
-        y = msg.position.y
+        x = msg.pose.position.x
+        y = msg.pose.position.y
 
-        quat = [msg.orientation.x, 
-                msg.orientation.y, 
-                msg.orientation.z, 
-                msg.orientation.w]
+        quat = [msg.pose.orientation.x, 
+                msg.pose.orientation.y, 
+                msg.pose.orientation.z, 
+                msg.pose.orientation.w]
         (_, _, yaw) = euler_from_quaternion(quat)
 
         self.goal_pose = [x,y,yaw]
@@ -53,12 +56,26 @@ class NavToPose(Node):
         fb.data = False
         self.feedback_pub.publish(fb)
 
+    # Get current pose from odom
+    def odom_cb(self, msg):
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+
+        quat = [msg.pose.pose.orientation.x, 
+                msg.pose.pose.orientation.y, 
+                msg.pose.pose.orientation.z, 
+                msg.pose.pose.orientation.w]
+        (_, _, yaw) = euler_from_quaternion(quat)
+
+        self.current_pose = [x,y,yaw]
+
+
 
     # Get current pose from tf
     def get_current_pose(self):
         now = self.get_clock().now()
 
-        trans = self.buffer.lookup_transform('map', 'base_link', now)
+        trans = self.buffer.lookup_transform('odom', 'base_link', now)
 
         x = trans.transform.translation.x
         y = trans.transform.translation.y
@@ -76,7 +93,7 @@ class NavToPose(Node):
     # Update velocity
     def timer_cb(self):
 
-        self.get_current_pose()
+        #self.get_current_pose()
 
         x_dist = self.goal_pose[0] - self.current_pose[0]
         y_dist = self.goal_pose[1] - self.current_pose[1]
