@@ -30,7 +30,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(usv_driver, 'sensors.launch.py')),
             launch_arguments={
-                'gps': 'False'
+                'gps': 'True'
             }.items(),
             condition=UnlessCondition(LaunchConfiguration('offboard'))
         ),
@@ -55,17 +55,13 @@ def generate_launch_description():
 
         # Launch localization
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'localization.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'simple_localization.launch.py')),
             launch_arguments={
                 'rviz': LaunchConfiguration('offboard')
             }.items(),
             condition=IfCondition(LaunchConfiguration('localization'))
         ),
 
-        # Launch navigation
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(usv_navigation, 'launch', 'navigation.launch.py')),
-            condition=IfCondition(LaunchConfiguration('navigation'))
-        )
+        
 
     ])

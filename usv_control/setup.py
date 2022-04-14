@@ -26,7 +26,7 @@ setup(
             'yaw_controller = usv_control.yaw_controller:main',
             'surge_controller = usv_control.surge_controller:main',
             'velocity_pid_controller = usv_control.velocity_pid_controller:main',
-            'cmd_vel_mux = usv_control.cmd_vel_mux:main'
+            'nav_to_pose = usv_control.nav_to_pose:main'
         ],
     },
 )

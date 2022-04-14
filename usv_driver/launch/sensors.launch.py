@@ -48,7 +48,7 @@ def generate_launch_description():
             name='gps_driver_node',
             namespace='/gps',
             parameters=[
-                {'port': '/dev/ttyUSB1'},
+                {'port': '/dev/ttyUSB0'},
                 {'frame_id': 'gps_link'}
             ],
             condition=IfCondition(LaunchConfiguration('gps'))
@@ -61,14 +61,14 @@ def generate_launch_description():
             name='cam_driver',
             namespace='camera',
             parameters=[
-                {'video_device': '/dev/video0'},
-                {'framerate': 30.0},
+                {'video_device': '/dev/video2'},
+                {'framerate': 10.0},
                 {'io_method': 'mmap'},
                 {'frame_id': 'camera_link'},
                 {'image_width': 640},
                 {'image_height': 480},
                 {'camera_name': 'usb_cam'},
-                {'camera_info_url': 'package://usv_driver/config/usb_cam_calib.yaml'}
+                {'camera_info_url': 'package://usv_driver/usb_cam_calib.yaml'}
             ],
             condition=IfCondition(LaunchConfiguration('camera'))
         )

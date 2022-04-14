@@ -14,6 +14,9 @@ def generate_launch_description():
     ukf_config = os.path.join(get_package_share_directory('usv_localization'), 
     'params', 'simple_ukf_params.yaml')
 
+    navsat_config = os.path.join(get_package_share_directory('usv_localization'), 
+    'params', 'navsat_params.yaml')
+
     rviz_config = os.path.join(get_package_share_directory('usv_localization'), 
     'config', 'tf.rviz')
 
@@ -26,7 +29,7 @@ def generate_launch_description():
 
         ### State estimation nodes - robot_localization stack        
         
-        # Launch one node for map -> base_link
+        # Launch one node for odom -> base_link
         Node(
             package='robot_localization',
             executable='ukf_node',
@@ -35,16 +38,28 @@ def generate_launch_description():
             parameters=[ukf_config]
         ),
 
+        # Navsat transform - takes in GPS fix and outputs odometry    
+        Node(
+            package='robot_localization',
+            executable='navsat_transform_node',
+            name='navsat_transform_node',
+            output='screen',
+            parameters=[navsat_config],
+            remappings=[
+                ('/imu', '/imu/data')
+            ]
+        ),
+
         # Add covariance to cmd_vel and republish
         Node(
             package='usv_localization',
             executable='twist_add_covariance',
-            parameters=[{'covariance': [0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                        0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
-                                        0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
-                                        0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
-                                        0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
-                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.1]}
+            parameters=[{'covariance': [0.01, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.01, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.01, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.01, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.01, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.01]}
             ]
         ),
 

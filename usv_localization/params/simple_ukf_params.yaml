@@ -22,9 +22,16 @@ ukf_node:
     imu0_nodelay: false
     imu0_differential: false
     imu0_relative: true
-    # imu0_pose_rejection_threshold: 0.8
-    # imu0_twist_rejection_threshold: 0.8
-    # imu0_linear_acceleration_rejection_threshold: 0.8
+
+    # GPS
+    odom0: /odometry/gps
+    odom0_config: [true, true, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, false]
+    odom0_queue_size: 10
+    odom0_differential: false
 
     # Velocity from cmd_vel, with covariance
     twist0: /velocity
@@ -37,17 +44,5 @@ ukf_node:
     twist0_nodelay: false
     twist0_differential: false
 
-    # GPS
-    odom0: /odometry/gps
-    odom0_config: [true, true, false,
-                   false, false, false,
-                   false, false, false,
-                   false, false, false,
-                   false, false, false]
-    odom0_queue_size: 10
-    odom0_nodelay: false
-    odom0_differential: false
-    odom0_relative: false
-    odom0_pose_rejection_threshold: 0.8
-    odom0_twist_rejection_threshold: 0.8
+
 

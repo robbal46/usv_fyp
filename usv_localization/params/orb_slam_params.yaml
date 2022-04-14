@@ -1,4 +1,5 @@
-orb_slam2_mono:
+# Params for pose/localization only
+orb_slam2_pose:
   ros__parameters:
 
     publish_point_cloud: false
@@ -10,13 +11,33 @@ orb_slam2_mono:
     load_map: false
     map_file: map.bin
 
-    pointcloud_frame_id: odom
+    pointcloud_frame_id: map
 
     camera_frame_id: camera_link    
-    camera_fps: 30
+    camera_fps: 10
     load_calibration_from_cam: true
     camera_rgb_encoding: true
 
+    min_num_kf_in_map: 5
+    ThDepth: 40.0
+    depth_map_factor: 1.0
+    camera_baseline: 171.0
+
+# Params for SLAM
+orb_slam2:
+  ros__parameters:
+    publish_point_cloud: true
+    publish_pose: true
+    publish_tf: true
+    localize_only: false
+    reset_map: false
+    load_map: true
+    map_file: map.bin
+    pointcloud_frame_id: map
+    camera_frame_id: base_link    
+    camera_fps: 30
+    load_calibration_from_cam: true
+    camera_rgb_encoding: true
     min_num_kf_in_map: 5
     ThDepth: 40.0
     depth_map_factor: 1.0

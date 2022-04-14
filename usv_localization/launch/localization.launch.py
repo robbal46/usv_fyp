@@ -89,7 +89,7 @@ def generate_launch_description():
                                         0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.1]}
             ]
-        ),        
+        ),  
 
         # Launch rviz with tf view
         Node(
