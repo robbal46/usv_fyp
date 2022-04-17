@@ -64,6 +64,15 @@ def generate_launch_description():
             condition=IfCondition(LaunchConfiguration('localization'))
         ),
 
+        # Start navigation node
+        Node(
+            package='usv_control',
+            executable='nav_to_pose',
+            output='screen',
+            condition=IfCondition(LaunchConfiguration('navigation'))
+        )
+
+
         
 
     ])
