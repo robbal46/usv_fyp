@@ -36,7 +36,7 @@ class NavToPose(Node):
         self.pose_tol = self.get_parameter('pose_tolerance').get_parameter_value().double_value 
 
         self.declare_parameter('rotate_to_goal', True)
-        self.rotate = self.get_parameter('roatate_to_goal').get_parameter_value().bool_value      
+        self.rotate = self.get_parameter('rotate_to_goal').get_parameter_value().bool_value      
 
 
         self.goal_pose = [0,0,0]
