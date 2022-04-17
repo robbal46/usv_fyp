@@ -82,10 +82,7 @@ def generate_launch_description():
         Node(
             package="usv_localization",
             executable="dead_reckoning",
-            name="dead_reckoning",
-            remappings=[
-                ('/odometry/filtered', 'odometry/filtered/odom')
-            ]
+            name="dead_reckoning"
         ),
 
         # Launch rviz with tf view

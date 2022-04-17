@@ -19,13 +19,13 @@ class NavToPose(Node):
 
         self.create_subscription(PoseStamped, 'goal_pose', self.goal_cb, 10)
 
-        self.create_subscription(Odometry, 'odometry/filtered', self.odom_cb, 10)
+        self.create_subscription(Odometry, 'odometry/filtered/odom', self.odom_cb, 10)
 
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
         self.feedback_pub = self.create_publisher(Bool, 'new_goal', 10)
 
-        self.create_timer(0.2, self.timer_cb)
+        self.create_timer(0.5, self.timer_cb)
 
 
         self.buffer = Buffer()
@@ -103,7 +103,8 @@ class NavToPose(Node):
         
         dist_to_goal = sqrt(pow(x_dist,2) + pow(y_dist,2))
         heading = atan2(y_dist, x_dist)
-        print(f'Distance: {dist_to_goal}, Heading: {heading}')
+        #print(f'Distance: {dist_to_goal}, Heading: {heading}')
+        self.get_logger().info(f'Distance to goal: {dist_to_goal}')
 
         cmd = Twist()
 
@@ -111,6 +112,8 @@ class NavToPose(Node):
         if abs(dist_to_goal) < self.pose_tol:
 
             #Currently don't care about final heading
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.0
 
             fb = Bool()
             fb.data = True
@@ -132,17 +135,15 @@ class NavToPose(Node):
 
             cmd.angular.z = self.yaw_vel(heading_error)
 
-            print(f'Surge: {cmd.linear.x}, Yaw: {cmd.angular.z}')
-
         self.vel_pub.publish(cmd)
 
 
 
     def surge_vel(self, dist):
-        return self.logistic_vel(dist, 0.6, 0.1, 1.0)
+        return self.logistic_vel(dist, 1.0, 0.05, 0.5)
 
     def yaw_vel(self, dist):
-        return self.logistic_vel(dist, 2.0, 0.08, 1.0)
+        return self.logistic_vel(dist, 2.0, 0.02, 0.5)
 
 
     # Generate velocity demand based on logistic function
