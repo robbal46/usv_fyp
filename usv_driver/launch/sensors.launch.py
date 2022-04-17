@@ -48,7 +48,7 @@ def generate_launch_description():
             name='gps_driver_node',
             namespace='/gps',
             parameters=[
-                {'port': '/dev/ttyUSB0'},
+                {'port': '/dev/ttyUSB1'},
                 {'frame_id': 'gps_link'}
             ],
             condition=IfCondition(LaunchConfiguration('gps'))
