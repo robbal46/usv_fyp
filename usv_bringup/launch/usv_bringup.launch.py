@@ -55,9 +55,10 @@ def generate_launch_description():
 
         # Launch localization
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'simple_localization.launch.py')),
+            PythonLaunchDescriptionSource(os.path.join(usv_localization, 'launch', 'localization.launch.py')),
             launch_arguments={
-                'rviz': LaunchConfiguration('offboard')
+                'rviz': LaunchConfiguration('offboard'),
+                'gps': 'False'
             }.items(),
             condition=IfCondition(LaunchConfiguration('localization'))
         ),

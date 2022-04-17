@@ -23,6 +23,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 add_executable(pose_add_covariance
   src/pose_add_covariance.cpp
@@ -50,6 +51,18 @@ twist_add_covariance
   DESTINATION lib/${PROJECT_NAME}
 )
 
+add_executable(dead_reckoning
+  src/dead_reckoning.cpp
+)
+ament_target_dependencies(dead_reckoning
+  rclcpp
+  geometry_msgs
+  nav_msgs
+)
+install(TARGETS
+dead_reckoning
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 
 install(DIRECTORY

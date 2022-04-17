@@ -22,16 +22,15 @@ ukf_odom_node:
     imu0_differential: false
     imu0_relative: true
 
-    # Velocity from cmd_vel, with covariance
-    twist0: /velocity
-    twist0_config: [false, false, false,
+    # Odom from dead reckoning
+    odom0: /odometry/dead_reckoning
+    odom0_config: [true, true, false,
                   false, false, false,
-                  true, true, false,
+                  false, false, false,
                   false, false, false,
                   false, false, false]
-    twist0_queue_size: 5
-    twist0_nodelay: false
-    twist0_differential: false
+    odom0_queue_size: 10
+    odom0_differential: false
 
 
     process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -79,16 +78,6 @@ ukf_map_node:
     base_link_frame: base_link
     world_frame: map   
 
-
-    pose0: /camera/pose
-    pose0_config: [true,  true,  false,
-                   false, false, true, 
-                   false, false, false,
-                   false, false, false,
-                   false, false, false] 
-    pose0_queue_size: 10
-    pose0_differential: true
-
     imu0: /imu/data
     imu0_config: [false, false, false,
                   false, false, true,
@@ -100,16 +89,25 @@ ukf_map_node:
     imu0_differential: false
     imu0_relative: true
 
-    # Velocity from cmd_vel, with covariance
-    twist0: /velocity
-    twist0_config: [false, false, false,
+    # Odom from dead reckoning
+    odom0: /odometry/dead_reckoning
+    odom0_config: [true, true, false,
                   false, false, false,
-                  true, true, false,
+                  false, false, false,
                   false, false, false,
                   false, false, false]
-    twist0_queue_size: 5
-    twist0_nodelay: false
-    twist0_differential: false
+    odom0_queue_size: 10
+    odom0_differential: false
+
+
+    odom1: /odometry/gps
+    odom1_config: [true, true, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, false]
+    odom1_queue_size: 10
+    odom1_differential: false
 
 
     process_noise_covariance: [0.05, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,

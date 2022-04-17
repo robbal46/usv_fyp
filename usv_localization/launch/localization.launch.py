@@ -26,7 +26,7 @@ def generate_launch_description():
     return LaunchDescription([
 
          DeclareLaunchArgument('rviz', default_value='false'),
-         DeclareLaunchArgument('gps', default_value='false'),
+         DeclareLaunchArgument('gps', default_value='true'),
 
         # Robot state publisher to broadcast static tfs from urdf
         Node(
@@ -78,18 +78,15 @@ def generate_launch_description():
             condition=IfCondition(LaunchConfiguration('gps'))
         ),
 
-        # Add covariance to cmd_vel and republish
+        # Dead reckoning odom
         Node(
-            package='usv_localization',
-            executable='twist_add_covariance',
-            parameters=[{'covariance': [0.1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                        0.0, 0.1, 0.0, 0.0, 0.0, 0.0,
-                                        0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
-                                        0.0, 0.0, 0.0, 0.1, 0.0, 0.0,
-                                        0.0, 0.0, 0.0, 0.0, 0.1, 0.0,
-                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.1]}
+            package="usv_localization",
+            executable="dead_reckoning",
+            name="dead_reckoning",
+            remappings=[
+                ('/odometry/filtered', 'odometry/filtered/odom')
             ]
-        ),  
+        ),
 
         # Launch rviz with tf view
         Node(
