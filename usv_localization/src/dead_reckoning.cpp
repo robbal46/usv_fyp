@@ -52,7 +52,11 @@ class DeadReckoning : public rclcpp::Node
             odom_msg.pose.pose.position.y = y;
             odom_msg.pose.covariance = covariance;
 
+            //odom_msg.twist.twist.linear.x = msg->linear.x * cos(th);
+            //odom_msg.twist.twist.linear.y = msg->linear.y * sin(th);
+
             odom_msg.header.frame_id = "odom";
+            odom_msg.child_frame_id = "base_link";
             odom_msg.header.stamp = now;
 
             odom_pub->publish(odom_msg);
