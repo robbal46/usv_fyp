@@ -69,6 +69,9 @@ def generate_launch_description():
             package='usv_control',
             executable='nav_to_pose',
             output='screen',
+            parameters=[
+                {'frame': 'odom'}
+            ],
             condition=IfCondition(LaunchConfiguration('navigation'))
         )
 

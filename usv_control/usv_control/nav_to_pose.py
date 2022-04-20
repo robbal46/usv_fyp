@@ -17,10 +17,18 @@ class NavToPose(Node):
     def __init__(self):
         super().__init__('nav_to_pose')
 
+        # Params
+        self.declare_parameter('frame', 'odom')
+        frame = self.get_parameter('frame').get_parameter_value().string_value
+        # Frame in which poses are given
+        frame_id = '/odometry/filtered/' + frame
+
+        # Subs
         self.create_subscription(PoseStamped, 'goal_pose', self.goal_cb, 10)
 
-        self.create_subscription(Odometry, 'odometry/filtered/odom', self.odom_cb, 10)
+        self.create_subscription(Odometry, frame_id, self.odom_cb, 10)
 
+        # Pubs
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
         self.feedback_pub = self.create_publisher(Bool, 'new_goal', 10)
@@ -32,7 +40,7 @@ class NavToPose(Node):
         self.listener = TransformListener(self.buffer, self)
 
         # Parameters
-        self.declare_parameter('pose_tolerance', 1.0)
+        self.declare_parameter('pose_tolerance', 0.5)
         self.pose_tol = self.get_parameter('pose_tolerance').get_parameter_value().double_value 
 
         self.declare_parameter('rotate_to_goal', True)
@@ -104,7 +112,7 @@ class NavToPose(Node):
         dist_to_goal = sqrt(pow(x_dist,2) + pow(y_dist,2))
         heading = atan2(y_dist, x_dist)
         #print(f'Distance: {dist_to_goal}, Heading: {heading}')
-        self.get_logger().info(f'Distance to goal: {dist_to_goal}')
+        #self.get_logger().info(f'Distance to goal: {dist_to_goal}')
 
         cmd = Twist()
 
@@ -140,10 +148,10 @@ class NavToPose(Node):
 
 
     def surge_vel(self, dist):
-        return self.logistic_vel(dist, 1.0, 0.05, 0.5)
+        return self.logistic_vel(dist, 0.6, 0.05, 0.5)
 
     def yaw_vel(self, dist):
-        return self.logistic_vel(dist, 2.0, 0.02, 0.5)
+        return self.logistic_vel(dist, 3.0, 0.05, 1.0)
 
 
     # Generate velocity demand based on logistic function
