@@ -23,7 +23,7 @@ def generate_launch_description():
             name='yaw_controller',
             output='screen',
             parameters=[
-                {'pid': [40.0, 1.0, 0.0]}
+                {'pid': [100.0, 0.0, 0.0]}
             ],
             condition=IfCondition(LaunchConfiguration('yaw_control'))
         ),        
