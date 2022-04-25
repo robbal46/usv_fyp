@@ -4,3 +4,4 @@ navsat_transform_node:
     publish_filtered_gps: true
     broadcast_utm_transform: true
     zero_altitude: true
+    yaw_offset: 1.5708

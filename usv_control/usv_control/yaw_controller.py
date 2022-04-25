@@ -19,7 +19,7 @@ class YawController(Node):
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_cb, 10)
         self.vel_sub = self.create_subscription(Twist, '/cmd_vel', self.vel_cb, 10)
 
-        self.declare_parameter('pid', [100.0, 0.0, 0.0])
+        self.declare_parameter('pid', [140.0, 90.0, 4.0])
         gains = self.get_parameter('pid').get_parameter_value().double_array_value
 
         self.pid = PID(gains[0], gains[1], gains[2])
