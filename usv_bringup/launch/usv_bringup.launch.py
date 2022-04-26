@@ -70,7 +70,7 @@ def generate_launch_description():
             executable='nav_to_pose',
             output='screen',
             parameters=[
-                {'frame': 'odom'}
+                {'frame': 'map'}
             ],
             condition=IfCondition(LaunchConfiguration('navigation'))
         )

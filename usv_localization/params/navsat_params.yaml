@@ -5,3 +5,4 @@ navsat_transform_node:
     broadcast_utm_transform: true
     zero_altitude: true
     yaw_offset: 1.5708
+    magnetic_declination_radians: 0.004654
