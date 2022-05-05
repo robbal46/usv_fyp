@@ -20,7 +20,7 @@ class DeadReckoning : public rclcpp::Node
                 "/cmd_vel", 10, std::bind(&DeadReckoning::twist_callback, this, _1));
 
             odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
-                "/odometry/filtered", 10, std::bind(&DeadReckoning::odom_cb, this, _1));
+                "/odometry/filtered/odom", 10, std::bind(&DeadReckoning::odom_cb, this, _1));
 
             odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(
                 "/odometry/dead_reckoning", 10);
